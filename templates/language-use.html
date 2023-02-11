@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Countries and language</title>
+</head>
+<body>
+    <nav class = "menu">
+       /<a href='/'>Домой</a>/<a href='/countries-list'>К списку стран</a>/
+    </nav>
+        <nav class = "main">
+            <h1>Страны, в которых говорят на {{ language }}:</h1>
+        </nav>
+
+    <nav class = "menu">
+        <ol>
+            {% for countr in country %}
+                <li><a>{{ countr }}</a></li>
+            {% endfor %}
+        </ol>
+    </nav>
+    <p><a href='languages-list/'>К списку всех языков</a></p>
+</body>
+</html>
