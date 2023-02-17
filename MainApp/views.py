@@ -4,6 +4,7 @@ import json
 import string
 from django.core.paginator import Paginator
 
+# TODO: абсолютные пути недопустимы. Путь должен быть указан относительно корня вашего проекта
 with open('/home/student/Projects/DjangoCountriess/country-by-languages.json') as json_file:
     data = json.load(json_file)
 
@@ -39,6 +40,7 @@ def country(request, country_name):
     info_about_country = {}
 
     for country_info in data:
+        # TODO: а если будет отправлен запрос с именем несуществующей страны? Добавьте обработку этой ситуации
         if country_info['country'] == country_name:
             info_about_country['country'] = country_info['country']
             info_about_country['languages'] = country_info['languages']
