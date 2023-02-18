@@ -1,4 +1,4 @@
-"""DjangoCountriess URL Configuration
+"""DjangoCountries URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
@@ -15,15 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
-from django.urls import path
 from MainApp import views
 
 urlpatterns = [
-    path('', views.main_page),
-    path('countries-list/', views.countries_list),
-    path('languages-list/', views.languages),
-    path('languages-list/<str:language>', views.languages_countries),
-    path('countries-list/<str:country_name>', views.country),
-    path('countries-list/speaking-countries/<str:language>', views.language_in_countries)
+    path('', views.main_page, name="home"),
+    path('countries-list/', views.countries_list, name="countries"),
+    path('languages-list/', views.languages, name="languages"),
+    path('languages-list/<str:language>', views.countries_languages, name="countries_languages"),
+    path('countries-list/<str:country_name>', views.country, name="country"),
+    path('countries-list/speaking-countries/<str:language>', views.language_in_countries, name="language_in_countries"
+                                                                                               "")
 ]
