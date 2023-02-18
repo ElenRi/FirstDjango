@@ -2,63 +2,90 @@ from django.shortcuts import render, HttpResponse
 from django.http import HttpResponseNotFound
 import json
 import string
+import sqlite3
 from django.core.paginator import Paginator
+from MainApp.models import Countries
 
-with open('/home/student/Projects/DjangoCountriess/country-by-languages.json') as json_file:
+
+with open('//country-by-languages.json') as json_file:
     data = json.load(json_file)
 
-letters = list(string.ascii_uppercase)
+# letters = list(string.ascii_uppercase)
 
+countries = {}
+countries_alphabetical_list = set()
+language_list = []
+
+countries_bd = Countries.objects.all()
+for countries_object in countries_bd:
+    contry_name = countries_object.country
+    letter = contry_name[0]
+    countries_alphabetical_list.add(letter)
+    countries[contry_name] = []
+    languages = countries_object.languages.split(',')
+    language_list.extend(languages)
+    countries[countries_object.country].extend(languages)
+
+language_list.sort()
+countries_alphabetical_list.sort()
 
 def main_page(request):
     return render(request, 'index.html')
 
+
 def countries_list(request):
-    countries = []
-    for countries_b in data:
-        countries.append(countries_b['country'])
-    word = request.GET.get('word')
-    if word:
-        countries = list(filter(lambda name: name[0] == word, countries))
-    countries = sorted(countries)
-    p = Paginator(countries, 15)
-    page_number = request.GET.get('page')
-    page_countries = p.get_page(page_number)
-    return render(request, 'countries-list.html', {'page_countries': page_countries, 'letters': letters, 'word': word})
+    page = request.GET.get('page')
+    pag = Paginator(list(countries.keys()), 10)
+    page_obj = pag.get_page(page)
+    context = {
+        "page": page,
+        "page_obj": page_obj,
+        'countries_alphabetical_list': countries_alphabetical_list,
+    }
+    return render(request, 'countries-list.html', context)
 
 
-def languages(request):
-    languages_list = set()
-    for lang in data:
-        languages_list.update(lang['languages'])
-
-    return render(request, 'languages.html', {'languages': sorted(languages_list)})
-
-
-def country(request, country_name):
-    info_about_country = {}
-
-    for country_info in data:
-        if country_info['country'] == country_name:
-            info_about_country['country'] = country_info['country']
-            info_about_country['languages'] = country_info['languages']
-            return render(request, 'countries-page.html', {'country': info_about_country})
+def country_page(request, country: str):
+    languages = countries[country]
+    context = {
+        'country': country,
+        'languages': languages
+    }
+    return render(request, 'countries-page.html', context)
 
 
-def language_in_countries(request, language):
-    country_name = []
-    for countries in data:
-        if language in countries['languages']:
-            country_name.append(countries['country'])
-    country_names = country_name
-    return render(request, 'language-use.html', {'country': country_names, 'language': language})
+def countries_letter(request, letter: str):
+    countries_list = []
+
+    for country in countries:
+        if country.startswith(letter):
+            countries_list.append(country)
+
+    context = {
+        'letter': letter,
+        'countries_list': countries_list
+    }
+    return render(request, 'countries-lettr.html', context)
 
 
-def languages_countries(request, language):
-    country_name = []
-    for countries in data:
-        if language in countries['languages']:
-            country_name.append(countries['country'])
-    country_names = country_name
-    return render(request, 'language-use.html', {'country': country_names, 'language': language})
+def language_page(request):
+    context = {
+        'language_list': language_list
+    }
+    return render(request, 'languages.html', context)
+
+
+def language_use(request, language:str):
+    countries_list = list()
+    for country in countries:
+        if countries[country].count(language) > 0:
+            countries_list.append(country)
+        countries_list.sort()
+
+    context = {
+        'language': language,
+        'countries_list': countries_list
+    }
+    return render(request, 'language_use.html', context)
+
 
