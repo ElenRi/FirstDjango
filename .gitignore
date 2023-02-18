@@ -2,4 +2,3 @@
 *.pyc
 *_venv/
 db.*
-__pycache__/
