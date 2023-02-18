@@ -10,6 +10,7 @@ with open('/home/student/Projects/DjangoCountriess/country-by-languages.json') a
 letters = list(string.ascii_uppercase)
 
 
+
 def main_page(request):
     return render(request, 'index.html')
 
