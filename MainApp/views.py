@@ -4,13 +4,14 @@ import json
 import string
 from django.core.paginator import Paginator
 
+# TODO: использование абсолютных путей недопустимо, используйте пути относительно корня проекта.
 with open('/home/student/Projects/DjangoCountriess/country-by-languages.json') as json_file:
     data = json.load(json_file)
 
 letters = list(string.ascii_uppercase)
 
 
-
+# TODO: выполнена малая часть ДЗ. Жду выполнение основной части, а главное - сохранение информации в БД
 def main_page(request):
     return render(request, 'index.html')
 
